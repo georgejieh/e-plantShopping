@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import './ProductList.css';
 import CartItem from './CartItem';
-import { useDispatch } from 'react-redux';
-import { addItem } from './CartSlice'; // Import the addItem reducer from CartSlice.jsx
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from './CartSlice'; // Import the addItem action
 
 function ProductList() {
     const [showCart, setShowCart] = useState(false);
     const [addedToCart, setAddedToCart] = useState({}); // State to track added products
     const dispatch = useDispatch();
+    const cart = useSelector(state => state.cart.items); // Retrieve cart items from the Redux store
+
+    // Initialize the cart quantity by summing up all item quantities
+    const getTotalCartQuantity = () => {
+        return cart.reduce((total, item) => total + item.quantity, 0);
+    };
 
     const plantsArray = [
         {
@@ -59,7 +65,7 @@ function ProductList() {
     ];
 
     const handleAddToCart = (product) => {
-        dispatch(addItem(product)); // Dispatch the product to the global store
+        dispatch(addItem(product)); // Dispatch the product to the Redux store
         setAddedToCart((prevState) => ({
             ...prevState,
             [product.name]: true, // Mark the product as added
@@ -90,7 +96,7 @@ function ProductList() {
                         Plants
                     </button>
                     <button style={{ color: 'white', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '18px' }} onClick={handleCartClick}>
-                        Cart
+                        Cart ({getTotalCartQuantity()}) {/* Show total cart quantity */}
                     </button>
                 </div>
             </div>
