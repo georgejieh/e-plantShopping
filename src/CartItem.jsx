@@ -1,54 +1,51 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { addItem, removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items); // Access cart items from Redux store
   const dispatch = useDispatch();
 
-  // Calculate the total cost of all items in the cart
   const calculateTotalAmount = () => {
     return cart
       .reduce((total, item) => {
-        const itemCost = parseFloat(item.cost.replace('$', '')); // Remove $ and convert to number
+        const itemCost = parseFloat(item.cost.replace('$', ''));
         return total + itemCost * item.quantity;
       }, 0)
-      .toFixed(2); // Round to 2 decimal places
+      .toFixed(2);
   };
 
-  // Calculate the total cost of a single item type in the cart
   const calculateTotalCost = (item) => {
-    const itemCost = parseFloat(item.cost.replace('$', '')); // Remove $ and convert to number
-    return (itemCost * item.quantity).toFixed(2); // Round to 2 decimal places
+    const itemCost = parseFloat(item.cost.replace('$', ''));
+    return (itemCost * item.quantity).toFixed(2);
   };
 
-  // Handle the "Continue Shopping" button
   const handleContinueShopping = (e) => {
     e.preventDefault();
-    onContinueShopping(); // Call the parent function to navigate back to the product list
+    onContinueShopping(); // Navigate back to the product list
   };
 
-  // Handle incrementing the quantity of an item
   const handleIncrement = (item) => {
-    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 })); // Increase quantity by 1
+    dispatch(updateQuantity({ name: item.name, quantity: item.quantity + 1 })); // Increase quantity
   };
 
-  // Handle decrementing the quantity of an item
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 })); // Decrease quantity by 1
+      dispatch(updateQuantity({ name: item.name, quantity: item.quantity - 1 })); // Decrease quantity
     } else {
       dispatch(removeItem({ name: item.name })); // Remove item if quantity reaches 0
     }
   };
 
-  // Handle removing an item from the cart
   const handleRemove = (item) => {
-    dispatch(removeItem({ name: item.name })); // Dispatch removeItem action to Redux
+    dispatch(removeItem({ name: item.name })); // Remove item from cart
   };
 
-  // Handle checkout (placeholder functionality)
+  const handleAddItem = (item) => {
+    dispatch(addItem(item)); // Re-add item to cart (optional use case)
+  };
+
   const handleCheckoutShopping = (e) => {
     e.preventDefault();
     alert('Checkout functionality to be added in the future.');
